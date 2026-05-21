@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Hub Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+<style>
+body {
+  margin:0;
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#0f172a,#1e293b);
+  color:white;
+}
+header {
+  text-align:center;
+  padding:20px;
+  font-size:28px;
+  font-weight:700;
+  background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(10px);
+}
+.container {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:20px;
+  padding:20px;
+}
+.card {
+  background:rgba(255,255,255,0.05);
+  padding:20px;
+  border-radius:20px;
+  backdrop-filter:blur(10px);
+  transition:0.3s;
+}
+.card:hover {
+  transform:translateY(-10px);
+}
+button {
+  margin-top:10px;
+  padding:10px;
+  border:none;
+  border-radius:10px;
+  background:#38bdf8;
+  cursor:pointer;
+  font-weight:600;
+}
+#chatbox {
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  width:320px;
+  background:#1e293b;
+  border-radius:15px;
+  overflow:hidden;
+  display:none;
+}
+#messages {
+  height:250px;
+  overflow-y:auto;
+  padding:10px;
+}
+.msg {
+  margin:5px 0;
+}
+.user {color:#38bdf8;}
+.bot {color:#22c55e;}
+.inputBox {
+  display:flex;
+}
+input {
+  flex:1;
+  padding:10px;
+  border:none;
+}
+</style>
+</head>
+<body>
+
+<header>🚀 AI Hub Pro - Next Level AI Platform</header>
+
+<div class="container">
+
+<div class="card">
+<h2>💬 Smart AI Chat</h2>
+<p>Advanced chatbot with smart replies</p>
+<button onclick="openChat()">Launch</button>
+</div>
+
+<div class="card">
+<h2>🎨 AI Image Generator</h2>
+<p>Generate images using prompt</p>
+<input id="imgPrompt" placeholder="Enter prompt">
+<button onclick="generateImage()">Generate</button>
+<div id="imgResult"></div>
+</div>
+
+<div class="card">
+<h2>💻 Code Generator</h2>
+<p>Generate HTML, JS, Python instantly</p>
+<input id="codePrompt" placeholder="Enter coding task">
+<button onclick="generateCode()">Generate</button>
+<pre id="codeResult"></pre>
+</div>
+
+</div>
+
+<!-- CHATBOT -->
+<div id="chatbox">
+<div id="messages"></div>
+<div class="inputBox">
+<input id="userInput" placeholder="Ask anything...">
+<button onclick="sendMessage()">➤</button>
+</div>
+</div>
+
+<script>
+
+function openChat(){
+ document.getElementById('chatbox').style.display='block';
+}
+
+async function sendMessage(){
+
+ let input = document.getElementById('userInput').value;
+
+ let messages = document.getElementById('messages');
+
+ messages.innerHTML += `
+ <div class='msg user'>You: ${input}</div>
+ `;
+
+ let response = await fetch(`/chatbot/?message=${input}`);
+
+ let data = await response.json();
+
+ messages.innerHTML += `
+ <div class='msg bot'>AI: ${data.reply}</div>
+ `;
+
+ document.getElementById('userInput').value='';
+
+ messages.scrollTop = messages.scrollHeight;
+}
+
+async function generateCode(){
+
+ let prompt = document.getElementById('codePrompt').value;
+
+ let response = await fetch(`/generate-code/?prompt=${prompt}`);
+
+ let data = await response.json();
+
+ document.getElementById('codeResult').textContent = data.code;
+}
+
+
+async function generateImage(){
+
+ let prompt = document.getElementById('imgPrompt').value;
+
+ let resultDiv = document.getElementById('imgResult');
+
+ resultDiv.innerHTML = "Generating image... ⏳";
+
+ let response = await fetch(`/generate-image/?prompt=${prompt}`);
+
+ let data = await response.json();
+
+ resultDiv.innerHTML = `
+ <img src="${data.image_url}" width="100%" 
+ style="border-radius:15px;margin-top:10px;">
+ `;
+}
+
+</script>
+
+</body>
+</html>
