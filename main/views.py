@@ -137,12 +137,19 @@ pipe = StableDiffusionPipeline.from_pretrained(
     torch_dtype=torch.float32
 )
 
+
+
+import os
+from django.conf import settings
+from django.http import JsonResponse
+
 # Image Generator
 def generate_image(request):
 
     prompt = request.GET.get('prompt', '')
 
     if not prompt:
+
         return JsonResponse({
             'result': 'Please enter a prompt'
         })
@@ -150,12 +157,72 @@ def generate_image(request):
     # Generate image
     image = pipe(prompt).images[0]
 
-    # Media folder
-    media_path = os.path.join(settings.MEDIA_ROOT, "generated_image.png")
+    # Create media folder automatically
+    os.makedirs(settings.MEDIA_ROOT, exist_ok=True)
+
+    # Image path
+    media_path = os.path.join(
+        settings.MEDIA_ROOT,
+        "generated_image.png"
+    )
 
     # Save image
     image.save(media_path)
 
     return JsonResponse({
         'image_url': settings.MEDIA_URL + "generated_image.png"
+    })
+
+
+
+
+from transformers import pipeline
+
+code_generator = pipeline(
+    "text-generation",
+    model="deepseek-ai/deepseek-coder-1.3b-base"
+)
+
+from django.http import JsonResponse
+
+def generate_code(request):
+
+    prompt = request.GET.get('prompt', '')
+
+    if not prompt:
+
+        return JsonResponse({
+            'code': 'Please enter a coding task.'
+        })
+
+    # AI prompt
+    full_prompt = f"""
+Write clean and correct code for:
+
+{prompt}
+
+Code:
+"""
+
+    # Generate code
+    result = code_generator(
+
+        full_prompt,
+
+        max_new_tokens=200,
+
+        temperature=0.3,
+
+        top_p=0.95,
+
+        do_sample=True
+    )
+
+    generated = result[0]['generated_text']
+
+    # Remove prompt text
+    code = generated.replace(full_prompt, "").strip()
+
+    return JsonResponse({
+        'code': code
     })
