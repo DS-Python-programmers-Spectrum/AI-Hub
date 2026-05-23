@@ -116,7 +116,11 @@ import os
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
+LOGIN_URL = '/login/'
 
+LOGIN_REDIRECT_URL = '/'
+
+LOGOUT_REDIRECT_URL = '/login/'
 
 MEDIA_URL = '/media/'
 

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Signup</title>
+
+<style>
+
+body{
+    font-family:Arial;
+    background:#0f172a;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.form-box{
+    background:#1e293b;
+    padding:40px;
+    border-radius:20px;
+    width:350px;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin-top:15px;
+    border:none;
+    border-radius:10px;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    margin-top:20px;
+    border:none;
+    border-radius:10px;
+    background:#38bdf8;
+    color:white;
+    font-weight:bold;
+}
+
+.error{
+    color:red;
+    margin-top:10px;
+}
+
+a{
+    color:#38bdf8;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="form-box">
+
+<h2>Create Account</h2>
+
+<form method="POST">
+
+{% csrf_token %}
+
+<input type="text"
+name="username"
+placeholder="Username">
+
+<input type="email"
+name="email"
+placeholder="Email">
+
+<input type="password"
+name="password"
+placeholder="Password">
+
+<button type="submit">
+Signup
+</button>
+
+</form>
+
+{% if error %}
+<p class="error">{{ error }}</p>
+{% endif %}
+
+<p>
+Already have account?
+<a href="/login/">Login</a>
+</p>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Dashboard</title>
+
+<style>
+
+body{
+    font-family:Arial;
+    background:#0f172a;
+    color:white;
+    padding:40px;
+}
+
+.card{
+    background:#1e293b;
+    padding:20px;
+    margin-top:20px;
+    border-radius:20px;
+}
+
+img{
+    width:250px;
+    border-radius:15px;
+}
+
+a{
+    color:#38bdf8;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>AI Hub Dashboard</h1>
+
+<a href="/logout/">Logout</a>
+
+<div class="card">
+
+<h2>Recent Chats</h2>
+
+{% for chat in chats %}
+
+<p>
+<b>You:</b> {{ chat.user_message }}
+</p>
+
+<p>
+<b>AI:</b> {{ chat.bot_reply }}
+</p>
+
+<hr>
+
+{% endfor %}
+
+</div>
+
+<div class="card">
+
+<h2>Generated Images</h2>
+
+{% for img in images %}
+
+<p>{{ img.prompt }}</p>
+
+<img src="{{ img.image.url }}">
+
+{% endfor %}
+
+</div>
+
+<div class="card">
+
+<h2>Generated Codes</h2>
+
+{% for code in codes %}
+
+<p><b>Prompt:</b> {{ code.prompt }}</p>
+
+<pre>{{ code.code }}</pre>
+
+<hr>
+
+{% endfor %}
+
+</div>
+
+</body>
+</html>

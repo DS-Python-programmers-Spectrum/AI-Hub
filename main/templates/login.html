@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Login</title>
+
+<style>
+
+body{
+    font-family:Arial;
+    background:#0f172a;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.form-box{
+    background:#1e293b;
+    padding:40px;
+    border-radius:20px;
+    width:350px;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin-top:15px;
+    border:none;
+    border-radius:10px;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    margin-top:20px;
+    border:none;
+    border-radius:10px;
+    background:#38bdf8;
+    color:white;
+    font-weight:bold;
+}
+
+a{
+    color:#38bdf8;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="form-box">
+
+<h2>Login</h2>
+
+<form method="POST">
+
+{% csrf_token %}
+
+<input type="text"
+name="username"
+placeholder="Username">
+
+<input type="password"
+name="password"
+placeholder="Password">
+
+<button type="submit">
+Login
+</button>
+
+</form>
+
+<p>
+No account?
+<a href="/signup/">Signup</a>
+</p>
+
+</div>
+
+</body>
+</html>
