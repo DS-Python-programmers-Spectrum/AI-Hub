@@ -1,32 +1,272 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
 
-<title>Dashboard</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AI Hub Pro Dashboard</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
 body{
-    font-family:Arial;
+    font-family:'Poppins',sans-serif;
     background:#0f172a;
     color:white;
+    overflow-x:hidden;
+}
+
+/* BACKGROUND */
+
+body::before{
+    content:'';
+    position:fixed;
+    width:500px;
+    height:500px;
+    background:#38bdf8;
+    filter:blur(180px);
+    top:-100px;
+    left:-100px;
+    opacity:0.3;
+    z-index:-1;
+}
+
+body::after{
+    content:'';
+    position:fixed;
+    width:400px;
+    height:400px;
+    background:#8b5cf6;
+    filter:blur(180px);
+    bottom:-100px;
+    right:-100px;
+    opacity:0.3;
+    z-index:-1;
+}
+
+/* HEADER */
+
+header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px 8%;
+    background:rgba(255,255,255,0.05);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid rgba(255,255,255,0.1);
+}
+
+.logo{
+    font-size:30px;
+    font-weight:700;
+}
+
+nav{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+nav a{
+    color:white;
+    text-decoration:none;
+    transition:0.3s;
+}
+
+nav a:hover{
+    color:#38bdf8;
+}
+
+button{
+    padding:12px 20px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(135deg,#38bdf8,#8b5cf6);
+    color:white;
+    font-weight:600;
+    cursor:pointer;
+}
+
+/* HERO */
+
+.hero{
+    text-align:center;
+    padding:60px 20px;
+}
+
+.hero h1{
+    font-size:55px;
+    margin-bottom:15px;
+}
+
+.hero span{
+    color:#38bdf8;
+}
+
+.hero p{
+    color:#cbd5e1;
+    font-size:18px;
+}
+
+/* STATS */
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:25px;
+    padding:20px 8%;
+}
+
+.stat-card{
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:25px;
+    padding:30px;
+    text-align:center;
+    backdrop-filter:blur(15px);
+    transition:0.4s;
+}
+
+.stat-card:hover{
+    transform:translateY(-8px);
+    border-color:#38bdf8;
+}
+
+.stat-card h2{
+    font-size:45px;
+    color:#38bdf8;
+    margin-bottom:10px;
+}
+
+.stat-card p{
+    color:#cbd5e1;
+}
+
+/* SECTION */
+
+.section{
+    padding:30px 8%;
+}
+
+.section-title{
+    font-size:32px;
+    margin-bottom:25px;
+}
+
+/* GRID */
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+    gap:25px;
+}
+
+/* CARD */
+
+.card{
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:25px;
+    padding:25px;
+    backdrop-filter:blur(15px);
+    overflow:hidden;
+    transition:0.4s;
+}
+
+.card:hover{
+    transform:translateY(-8px);
+    border-color:#38bdf8;
+}
+
+.card h3{
+    margin-bottom:15px;
+    color:#38bdf8;
+}
+
+.card p{
+    color:#cbd5e1;
+    line-height:1.7;
+    margin-bottom:10px;
+}
+
+.card small{
+    color:#94a3b8;
+}
+
+/* IMAGE */
+
+.generated-img{
+    width:100%;
+    border-radius:18px;
+    margin-top:15px;
+    border:1px solid rgba(255,255,255,0.1);
+}
+
+/* CODE */
+
+pre{
+    background:#020617;
+    padding:15px;
+    border-radius:15px;
+    overflow:auto;
+    color:#22c55e;
+    margin-top:15px;
+    max-height:250px;
+    font-size:13px;
+}
+
+/* RECOMMENDATION */
+
+.recommendation{
+    background:linear-gradient(135deg,#38bdf8,#8b5cf6);
+    padding:30px;
+    border-radius:25px;
+    font-size:18px;
+    line-height:1.8;
+}
+
+/* EMPTY */
+
+.empty{
+    text-align:center;
+    color:#94a3b8;
     padding:40px;
 }
 
-.card{
-    background:#1e293b;
-    padding:20px;
-    margin-top:20px;
-    border-radius:20px;
+/* FOOTER */
+
+footer{
+    text-align:center;
+    padding:30px;
+    color:#94a3b8;
 }
 
-img{
-    width:250px;
-    border-radius:15px;
-}
+/* RESPONSIVE */
 
-a{
-    color:#38bdf8;
+@media(max-width:768px){
+
+    header{
+        flex-direction:column;
+        gap:15px;
+    }
+
+    nav{
+        flex-wrap:wrap;
+        justify-content:center;
+    }
+
+    .hero h1{
+        font-size:38px;
+    }
 }
 
 </style>
@@ -35,59 +275,261 @@ a{
 
 <body>
 
-<h1>AI Hub Dashboard</h1>
+<!-- HEADER -->
 
-<a href="/logout/">Logout</a>
+<header>
 
-<div class="card">
+<div class="logo">
+🚀 AI Hub Pro
+</div>
 
-<h2>Recent Chats</h2>
+<nav>
+
+<a href="/">Home</a>
+
+<a href="/dashboard/">Dashboard</a>
+
+<a href="#">
+👋 {{ request.user.username }}
+</a>
+
+<form action="/logout/" method="post">
+
+{% csrf_token %}
+
+<button type="submit">
+Logout
+</button>
+
+</form>
+
+</nav>
+
+</header>
+
+<!-- HERO -->
+
+<section class="hero">
+
+<h1>
+Welcome Back <span>{{ request.user.username }}</span>
+</h1>
+
+<p>
+Your personalized AI dashboard and activity center
+</p>
+
+</section>
+
+<!-- STATS -->
+
+<section class="stats">
+
+<div class="stat-card">
+
+<h2>
+{{ total_chats }}
+</h2>
+
+<p>
+AI Chats
+</p>
+
+</div>
+
+<div class="stat-card">
+
+<h2>
+{{ total_images }}
+</h2>
+
+<p>
+Generated Images
+</p>
+
+</div>
+
+<div class="stat-card">
+
+<h2>
+{{ total_codes }}
+</h2>
+
+<p>
+Generated Codes
+</p>
+
+</div>
+
+</section>
+
+<!-- RECOMMENDATION -->
+
+<section class="section">
+
+<h2 class="section-title">
+🧠 Personal AI Recommendation
+</h2>
+
+<div class="recommendation">
+
+{{ recommendation }}
+
+</div>
+
+</section>
+
+<!-- CHAT HISTORY -->
+
+<section class="section">
+
+<h2 class="section-title">
+💬 Recent Chats
+</h2>
+
+<div class="grid">
 
 {% for chat in chats %}
 
-<p>
-<b>You:</b> {{ chat.user_message }}
-</p>
+<div class="card">
+
+<h3>
+You Asked
+</h3>
 
 <p>
-<b>AI:</b> {{ chat.bot_reply }}
+{{ chat.user_message }}
 </p>
 
-<hr>
+<h3>
+AI Reply
+</h3>
+
+<p>
+{{ chat.bot_reply }}
+</p>
+
+<small>
+{{ chat.created_at }}
+</small>
+
+</div>
+
+{% empty %}
+
+<div class="empty">
+
+No chats available.
+
+</div>
 
 {% endfor %}
 
 </div>
 
+</section>
+
+<!-- GENERATED IMAGES -->
+
+<section class="section">
+
+<h2 class="section-title">
+🎨 Generated Images
+</h2>
+
+<div class="grid">
+
+{% for image in images %}
+
 <div class="card">
 
-<h2>Generated Images</h2>
+<h3>
+Prompt
+</h3>
 
-{% for img in images %}
+<p>
+{{ image.prompt }}
+</p>
 
-<p>{{ img.prompt }}</p>
+<img
+src="{{ image.image.url }}"
+class="generated-img"
+>
 
-<img src="{{ img.image.url }}">
+<small>
+{{ image.created_at }}
+</small>
+
+</div>
+
+{% empty %}
+
+<div class="empty">
+
+No images generated yet.
+
+</div>
 
 {% endfor %}
 
 </div>
 
-<div class="card">
+</section>
 
-<h2>Generated Codes</h2>
+<!-- GENERATED CODE -->
+
+<section class="section">
+
+<h2 class="section-title">
+💻 Generated Code
+</h2>
+
+<div class="grid">
 
 {% for code in codes %}
 
-<p><b>Prompt:</b> {{ code.prompt }}</p>
+<div class="card">
 
-<pre>{{ code.code }}</pre>
+<h3>
+Prompt
+</h3>
 
-<hr>
+<p>
+{{ code.prompt }}
+</p>
+
+<pre>
+{{ code.code }}
+</pre>
+
+<small>
+{{ code.created_at }}
+</small>
+
+</div>
+
+{% empty %}
+
+<div class="empty">
+
+No generated code found.
+
+</div>
 
 {% endfor %}
 
 </div>
 
+</section>
+
+<!-- FOOTER -->
+
+<footer>
+
+© 2026 AI Hub Pro • Personalized AI Dashboard
+
+</footer>
+
 </body>
+
 </html>

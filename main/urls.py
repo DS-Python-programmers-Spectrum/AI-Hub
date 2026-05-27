@@ -44,5 +44,9 @@ urlpatterns = [
     # Dashboard
     path('dashboard/', views.dashboard,
          name='dashboard'),
+    path(
+    'recommend-learning/',
+    views.recommend_learning
+),
 
 ]

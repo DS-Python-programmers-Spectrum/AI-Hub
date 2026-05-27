@@ -35,6 +35,10 @@ def home(request):
 # CHATBOT MODEL
 # ==========================================
 
+# ==========================================
+# CHATBOT MODEL
+# ==========================================
+
 chatbot_ai = pipeline(
 
     "text-generation",
@@ -46,10 +50,11 @@ chatbot_ai = pipeline(
 # ==========================================
 # CHATBOT FUNCTION
 # ==========================================
+
 @login_required(login_url='/login/')
 def chatbot(request):
 
-    # Get user message
+    # User message
     message = request.GET.get('message', '').strip()
 
     if not message:
@@ -58,71 +63,55 @@ def chatbot(request):
             'reply': 'Please enter a message.'
         })
 
-    # Lowercase message
     lower_msg = message.lower()
 
     # ==========================================
     # MANUAL REPLIES
     # ==========================================
 
-    # Greetings
     if lower_msg in ["hello", "hi", "hey"]:
 
         reply = "Hello 👋 How can I help you today?"
 
-    # Family
-    elif any(word in lower_msg for word in [
-
-        "family",
-        "fam",
-        "brother",
-        "sister",
-        "parents"
-    ]):
-
-        reply = "No, I am an AI assistant, so I do not have a real family."
-
-    # Identity
     elif "who are you" in lower_msg:
 
-        reply = "I am an AI chatbot designed to help users."
+        reply = (
+            "I am an AI assistant built using "
+            "Django and Transformers."
+        )
 
-    # Creator
-    elif "created" in lower_msg or "creator" in lower_msg:
-
-        reply = "I was created using Python, Django, and AI technologies."
-
-    # News
-    elif any(word in lower_msg for word in [
-
-        "news",
-        "war",
-        "live",
-        "today",
-        "update"
-    ]):
-
-        reply = "I currently do not have live internet access for real-time updates."
-
-    # Joke
-    elif "joke" in lower_msg:
-
-        reply = "Why do programmers hate nature? Too many bugs 😄"
-
-    # Thanks
     elif "thank" in lower_msg:
 
         reply = "You're welcome 😊"
 
-    # Bye
-    elif any(word in lower_msg for word in [
-
-        "bye",
-        "goodbye",
-        "see you"
-    ]):
+    elif "bye" in lower_msg:
 
         reply = "Goodbye 👋 Have a great day!"
+
+    elif "llm" in lower_msg:
+
+        reply = (
+            "LLM stands for Large Language Model. "
+            "It is an AI model trained on massive "
+            "text data to understand and generate "
+            "human language."
+        )
+
+    elif "machine learning" in lower_msg:
+
+        reply = (
+            "Machine Learning is a branch of AI "
+            "that enables computers to learn from "
+            "data and make predictions."
+        )
+
+    elif "deep learning" in lower_msg:
+
+        reply = (
+            "Deep Learning is a subset of machine "
+            "learning that uses neural networks "
+            "with multiple layers."
+        )
 
     # ==========================================
     # AI GENERATED RESPONSE
@@ -132,14 +121,13 @@ def chatbot(request):
 
         prompt = f"""
 <|system|>
-You are a smart, friendly AI assistant.
+You are a smart AI assistant.
 
 Rules:
-- Answer clearly
-- Keep answers short and natural
-- Do not repeat sentences
-- Do not pretend to have emotions or family
-- Give meaningful responses
+- Give short and clear answers
+- Maximum 2-3 sentences
+- Avoid repetition
+- Complete the answer properly
 
 <|user|>
 {message}
@@ -147,49 +135,73 @@ Rules:
 <|assistant|>
 """
 
+        # Generate response
         result = chatbot_ai(
 
             prompt,
 
-            max_new_tokens=80,
+            max_new_tokens=45,
 
-            temperature=0.6,
+            temperature=0.4,
 
-            top_k=50,
+            top_k=40,
 
-            top_p=0.9,
+            top_p=0.85,
 
             repetition_penalty=1.3,
 
-            do_sample=True
+            do_sample=True,
+
+            truncation=True
         )
 
+        # Full generated text
         text = result[0]['generated_text']
 
-        reply = text.split("<|assistant|>")[-1].strip()
+        # Extract assistant reply
+        reply = text.split("<|assistant|>")[-1]
 
-        # Remove unwanted text
-        reply = reply.replace("<|user|>", "")
+        # Remove unwanted tokens
         reply = reply.replace("</s>", "")
+        reply = reply.replace("<|user|>", "")
         reply = reply.replace("<|system|>", "")
 
-        # Clean repeated lines
-        lines = reply.split("\n")
+        # Remove line breaks
+        reply = reply.replace("\n", " ")
 
-        clean_lines = []
+        # ==========================================
+        # CLEAN RESPONSE
+        # ==========================================
 
-        for line in lines:
+        sentences = reply.split(".")
 
-            if line not in clean_lines:
+        clean_reply = ""
 
-                clean_lines.append(line)
+        count = 0
 
-        reply = " ".join(clean_lines)
+        for sentence in sentences:
 
-        # Empty reply fallback
-        if not reply:
+            sentence = sentence.strip()
 
-            reply = "Sorry, I could not understand that properly."
+            if sentence:
+
+                clean_reply += sentence + ". "
+
+                count += 1
+
+            # Keep only first 2 sentences
+            if count >= 2:
+                break
+
+        reply = clean_reply.strip()
+
+        # Empty fallback
+        if len(reply) < 2:
+
+            reply = (
+                "Sorry, I could not generate "
+                "a proper response."
+            )
 
     # ==========================================
     # SAVE CHAT HISTORY
@@ -197,17 +209,21 @@ Rules:
 
     ChatHistory.objects.create(
 
+        user=request.user,
+
         user_message=message,
 
         bot_reply=reply
     )
 
+    # ==========================================
+    # RETURN RESPONSE
+    # ==========================================
+
     return JsonResponse({
+
         'reply': reply
     })
-
-
-# ==========================================
 # IMAGE GENERATION MODEL
 # ==========================================
 
@@ -260,14 +276,17 @@ def generate_image(request):
 
     # Save image
     image.save(media_path)
-
-    # Save database
     GeneratedImage.objects.create(
 
-        prompt=prompt,
+    user=request.user,
 
-        image=filename
-    )
+    prompt=prompt,
+
+    image=filename
+)
+
+    # Save database
+    
 
     return JsonResponse({
 
@@ -281,11 +300,17 @@ def generate_image(request):
 # CODE GENERATOR MODEL
 # ==========================================
 
+# ==========================================
+# CODE GENERATOR MODEL
+# ==========================================
+
+from transformers import pipeline
+
 code_generator = pipeline(
 
     "text-generation",
 
-    model="deepseek-ai/deepseek-coder-1.3b-base"
+    model="deepseek-ai/deepseek-coder-1.3b-instruct"
 )
 
 
@@ -293,6 +318,7 @@ code_generator = pipeline(
 # CODE GENERATOR FUNCTION
 # ==========================================
 
+@login_required(login_url='/login/')
 def generate_code(request):
 
     prompt = request.GET.get('prompt', '').strip()
@@ -304,23 +330,170 @@ def generate_code(request):
             'code': 'Please enter a coding task.'
         })
 
-    # AI Prompt
-    full_prompt = f"""
-Write clean and correct code for:
+    # ==========================================
+    # SMART TEMPLATE RESPONSES
+    # ==========================================
 
+    lower_prompt = prompt.lower()
+
+    # Calculator
+    if "calculator" in lower_prompt:
+
+        code = """
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Calculator</title>
+
+<style>
+
+body{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  background:#0f172a;
+  font-family:Arial;
+}
+
+.calculator{
+  background:#1e293b;
+  padding:20px;
+  border-radius:20px;
+  width:300px;
+}
+
+input{
+  width:100%;
+  height:60px;
+  margin-bottom:15px;
+  font-size:24px;
+  text-align:right;
+  border:none;
+  border-radius:10px;
+  padding:10px;
+}
+
+button{
+  width:22%;
+  height:60px;
+  margin:1%;
+  border:none;
+  border-radius:10px;
+  font-size:20px;
+  cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="calculator">
+
+<input type="text" id="display" readonly>
+
+<div>
+
+<button onclick="add('7')">7</button>
+<button onclick="add('8')">8</button>
+<button onclick="add('9')">9</button>
+<button onclick="add('/')">/</button>
+
+<button onclick="add('4')">4</button>
+<button onclick="add('5')">5</button>
+<button onclick="add('6')">6</button>
+<button onclick="add('*')">*</button>
+
+<button onclick="add('1')">1</button>
+<button onclick="add('2')">2</button>
+<button onclick="add('3')">3</button>
+<button onclick="add('-')">-</button>
+
+<button onclick="add('0')">0</button>
+<button onclick="calculate()">=</button>
+<button onclick="clearDisplay()">C</button>
+<button onclick="add('+')">+</button>
+
+</div>
+
+</div>
+
+<script>
+
+function add(value){
+
+  document.getElementById('display').value += value;
+}
+
+function calculate(){
+
+  let result = eval(
+    document.getElementById('display').value
+  );
+
+  document.getElementById('display').value = result;
+}
+
+function clearDisplay(){
+
+  document.getElementById('display').value = '';
+}
+
+</script>
+
+</body>
+</html>
+"""
+
+        GeneratedCode.objects.create(
+
+            user=request.user,
+
+            prompt=prompt,
+
+            code=code
+        )
+
+        return JsonResponse({
+
+            'code': code
+        })
+
+    # ==========================================
+    # AI PROMPT
+    # ==========================================
+
+    full_prompt = f"""
+You are an expert AI coding assistant.
+
+Task:
 {prompt}
+
+Rules:
+- Generate complete working code
+- Add comments
+- Modern UI if frontend
+- Return only code
+- No explanations
 
 Code:
 """
 
-    # Generate code
+    # ==========================================
+    # GENERATE CODE
+    # ==========================================
+
     result = code_generator(
 
         full_prompt,
 
-        max_new_tokens=250,
+        max_new_tokens=400,
 
-        temperature=0.3,
+        temperature=0.2,
 
         top_p=0.95,
 
@@ -332,10 +505,25 @@ Code:
     generated = result[0]['generated_text']
 
     # Remove prompt
-    code = generated.replace(full_prompt, "").strip()
+    code = generated.replace(
 
-    # Save database
+        full_prompt,
+
+        ""
+    ).strip()
+
+    # Fallback
+    if len(code) < 10:
+
+        code = "Could not generate proper code."
+
+    # ==========================================
+    # SAVE DATABASE
+    # ==========================================
+
     GeneratedCode.objects.create(
+
+        user=request.user,
 
         prompt=prompt,
 
@@ -390,22 +578,207 @@ def signup_view(request):
 # DASHBOARD
 # ==========================================
 
-@login_required
+# ==========================================
+# PERSONALIZED DASHBOARD
+# ==========================================
+
+@login_required(login_url='/login/')
 def dashboard(request):
 
-    chats = ChatHistory.objects.all().order_by('-id')[:10]
+    # Current logged-in user
+    current_user = request.user
 
-    images = GeneratedImage.objects.all().order_by('-id')[:10]
+    # Only current user's chats
+    chats = ChatHistory.objects.filter(
 
-    codes = GeneratedCode.objects.all().order_by('-id')[:10]
+        user=current_user
 
+    ).order_by('-id')[:10]
+
+    # Only current user's images
+    images = GeneratedImage.objects.filter(
+
+        user=current_user
+
+    ).order_by('-id')[:10]
+
+    # Only current user's codes
+    codes = GeneratedCode.objects.filter(
+
+        user=current_user
+
+    ).order_by('-id')[:10]
+
+    # Dashboard stats
+    total_chats = ChatHistory.objects.filter(
+
+        user=current_user
+
+    ).count()
+
+    total_images = GeneratedImage.objects.filter(
+
+        user=current_user
+
+    ).count()
+
+    total_codes = GeneratedCode.objects.filter(
+
+        user=current_user
+
+    ).count()
+
+    # Personalized AI recommendation
+    recommendation = ""
+
+    if total_codes > 5:
+
+        recommendation = (
+            "💻 You are actively generating code. "
+            "Try learning Django APIs and AI integrations."
+        )
+
+    elif total_images > 5:
+
+        recommendation = (
+            "🎨 You enjoy AI image generation. "
+            "Explore prompt engineering and Stable Diffusion."
+        )
+
+    elif total_chats > 10:
+
+        recommendation = (
+            "🤖 You frequently use AI chat. "
+            "Try building advanced AI assistants."
+        )
+
+    else:
+
+        recommendation = (
+            "🚀 Start exploring AI tools to get "
+            "personalized recommendations."
+        )
+
+    # Send data to dashboard
     context = {
 
         'chats': chats,
 
         'images': images,
 
-        'codes': codes
+        'codes': codes,
+
+        'total_chats': total_chats,
+
+        'total_images': total_images,
+
+        'total_codes': total_codes,
+
+        'recommendation': recommendation
     }
 
-    return render(request, 'dashboard.html', context)
+    return render(
+
+        request,
+
+        'dashboard.html',
+
+        context
+    )
+
+from .models import LearningRecommendation
+@login_required(login_url='/login/')
+def recommend_learning(request):
+
+    topic = request.GET.get('topic', '').lower()
+
+    if not topic:
+
+        return JsonResponse({
+            'recommendation': 'Please enter a topic.'
+        })
+
+    # Beginner Recommendations
+
+    if "python" in topic:
+
+        level = "Beginner"
+
+        recommendation = """
+1. Learn Python Basics
+2. Learn Functions & OOP
+3. Practice Mini Projects
+4. Learn NumPy & Pandas
+5. Start Machine Learning
+"""
+
+    elif "machine learning" in topic:
+
+        level = "Intermediate"
+
+        recommendation = """
+1. Python & Statistics
+2. NumPy & Pandas
+3. Scikit-learn
+4. Regression & Classification
+5. ML Projects
+"""
+
+    elif "deep learning" in topic:
+
+        level = "Advanced"
+
+        recommendation = """
+1. Neural Networks
+2. TensorFlow / PyTorch
+3. CNN
+4. RNN & LSTM
+5. Transformers
+6. Build AI Projects
+"""
+
+    elif "django" in topic:
+
+        level = "Beginner to Intermediate"
+
+        recommendation = """
+1. Python Basics
+2. Django Models
+3. Templates
+4. Authentication
+5. APIs
+6. AI Integration
+"""
+
+    else:
+
+        level = "General"
+
+        recommendation = f"""
+Recommended Path for {topic}:
+
+1. Learn Basics
+2. Watch Tutorials
+3. Build Projects
+4. Practice Daily
+5. Create Portfolio
+"""
+
+    # Save to database
+    LearningRecommendation.objects.create(
+
+        user=request.user,
+
+        topic=topic,
+
+        level=level,
+
+        recommendation=recommendation
+    )
+
+    return JsonResponse({
+
+        'level': level,
+
+        'recommendation': recommendation
+    })

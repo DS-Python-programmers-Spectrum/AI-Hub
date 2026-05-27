@@ -4,7 +4,9 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
 <title>AI Hub Pro</title>
 
@@ -12,12 +14,18 @@
 
 <style>
 
-/* GLOBAL */
+/* =========================
+GLOBAL
+========================= */
 
 *{
   margin:0;
   padding:0;
   box-sizing:border-box;
+}
+
+html{
+  scroll-behavior:smooth;
 }
 
 body{
@@ -27,7 +35,9 @@ body{
   overflow-x:hidden;
 }
 
-/* SCROLLBAR */
+/* =========================
+SCROLLBAR
+========================= */
 
 ::-webkit-scrollbar{
   width:8px;
@@ -38,7 +48,9 @@ body{
   border-radius:10px;
 }
 
-/* BACKGROUND EFFECTS */
+/* =========================
+BACKGROUND EFFECTS
+========================= */
 
 body::before{
   content:'';
@@ -66,7 +78,9 @@ body::after{
   z-index:-1;
 }
 
-/* HEADER */
+/* =========================
+HEADER
+========================= */
 
 header{
   display:flex;
@@ -78,7 +92,7 @@ header{
   border-bottom:1px solid rgba(255,255,255,0.1);
   position:sticky;
   top:0;
-  z-index:100;
+  z-index:1000;
 }
 
 .logo{
@@ -102,13 +116,19 @@ nav a:hover{
   color:#38bdf8;
 }
 
-/* BUTTON */
+/* =========================
+BUTTONS
+========================= */
 
 button{
   padding:14px 24px;
   border:none;
   border-radius:14px;
-  background:linear-gradient(135deg,#38bdf8,#8b5cf6);
+  background:linear-gradient(
+  135deg,
+  #38bdf8,
+  #8b5cf6
+  );
   color:white;
   font-size:15px;
   font-weight:600;
@@ -120,11 +140,13 @@ button:hover{
   transform:translateY(-3px);
 }
 
-/* HERO */
+/* =========================
+HERO
+========================= */
 
 .hero{
   text-align:center;
-  padding:90px 20px;
+  padding:100px 20px;
 }
 
 .hero h1{
@@ -148,11 +170,41 @@ button:hover{
   margin-top:30px;
 }
 
-/* CARDS */
+/* =========================
+STATS
+========================= */
+
+.stats{
+  display:flex;
+  justify-content:center;
+  gap:30px;
+  padding:20px;
+  flex-wrap:wrap;
+}
+
+.stat-card{
+  background:rgba(255,255,255,0.05);
+  padding:25px 40px;
+  border-radius:20px;
+  text-align:center;
+  border:1px solid rgba(255,255,255,0.1);
+  backdrop-filter:blur(10px);
+}
+
+.stat-card h2{
+  color:#38bdf8;
+  font-size:35px;
+  margin-bottom:10px;
+}
+
+/* =========================
+CARDS
+========================= */
 
 .container{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+  grid-template-columns:
+  repeat(auto-fit,minmax(320px,1fr));
   gap:30px;
   padding:50px 8%;
 }
@@ -182,6 +234,7 @@ button:hover{
 .card:hover{
   transform:translateY(-10px);
   border-color:#38bdf8;
+  box-shadow:0 0 30px rgba(56,189,248,0.3);
 }
 
 .card h2{
@@ -195,7 +248,9 @@ button:hover{
   margin-bottom:20px;
 }
 
-/* INPUT */
+/* =========================
+INPUT
+========================= */
 
 input{
   width:100%;
@@ -209,7 +264,9 @@ input{
   font-size:15px;
 }
 
-/* IMAGE */
+/* =========================
+IMAGE
+========================= */
 
 #imgResult img{
   margin-top:20px;
@@ -218,7 +275,9 @@ input{
   border:2px solid rgba(255,255,255,0.1);
 }
 
-/* CODE BLOCK */
+/* =========================
+CODE BLOCK
+========================= */
 
 pre{
   margin-top:20px;
@@ -233,40 +292,26 @@ pre{
   max-height:400px;
 }
 
-/* CHATBOX */
+/* =========================
+CHATBOX
+========================= */
 
 #chatbox{
-
   position:fixed;
-
   top:100px;
-
   left:20px;
-
   width:360px;
-
   height:520px;
-
   background:#111827;
-
   border-radius:25px;
-
   overflow:hidden;
-
   display:none;
-
   flex-direction:column;
-
   box-shadow:0 10px 40px rgba(0,0,0,0.5);
-
   border:1px solid rgba(255,255,255,0.1);
-
-  z-index:1000;
-
+  z-index:5000;
   animation:floatBox 4s ease-in-out infinite;
 }
-
-/* FLOAT ANIMATION */
 
 @keyframes floatBox{
 
@@ -283,11 +328,17 @@ pre{
   }
 }
 
-/* CHAT HEADER */
+/* =========================
+CHAT HEADER
+========================= */
 
 .chat-header{
   padding:18px;
-  background:linear-gradient(135deg,#38bdf8,#8b5cf6);
+  background:linear-gradient(
+  135deg,
+  #38bdf8,
+  #8b5cf6
+  );
   font-weight:600;
   display:flex;
   justify-content:space-between;
@@ -302,7 +353,9 @@ pre{
   cursor:pointer;
 }
 
-/* MESSAGES */
+/* =========================
+MESSAGES
+========================= */
 
 #messages{
   flex:1;
@@ -328,7 +381,9 @@ pre{
   color:#e2e8f0;
 }
 
-/* INPUT BOX */
+/* =========================
+INPUT BOX
+========================= */
 
 .inputBox{
   display:flex;
@@ -341,64 +396,167 @@ pre{
   flex:1;
 }
 
-/* LOGIN POPUP */
+/* =========================
+LOGIN POPUP
+========================= */
 
 #loginPopup{
-
   position:fixed;
-
   inset:0;
-
   background:rgba(0,0,0,0.7);
-
   display:none;
-
   justify-content:center;
-
   align-items:center;
-
-  z-index:5000;
+  z-index:10000;
 }
 
 .popup-box{
-
   width:350px;
-
   padding:35px;
-
   border-radius:25px;
-
   background:#111827;
-
   border:1px solid rgba(255,255,255,0.1);
-
   text-align:center;
+  animation:popupShow 0.4s ease;
 }
 
 .popup-box h2{
-
   margin-bottom:15px;
 }
 
 .popup-box p{
-
   color:#cbd5e1;
-
   margin-bottom:25px;
-
   line-height:1.7;
 }
 
 .popup-buttons{
-
   display:flex;
-
   gap:10px;
-
   justify-content:center;
 }
 
-/* FOOTER */
+@keyframes popupShow{
+
+ from{
+  transform:scale(0.7);
+  opacity:0;
+ }
+
+ to{
+  transform:scale(1);
+  opacity:1;
+ }
+}
+
+/* =========================
+FLOATING AI BUTTON
+========================= */
+
+#floatingAI{
+  position:fixed;
+  bottom:30px;
+  right:30px;
+  width:70px;
+  height:70px;
+  border-radius:50%;
+  background:linear-gradient(
+  135deg,
+  #38bdf8,
+  #8b5cf6
+  );
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:32px;
+  cursor:pointer;
+  z-index:5000;
+  box-shadow:
+  0 0 25px rgba(56,189,248,0.7);
+  animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+
+ 0%{
+  transform:scale(1);
+ }
+
+ 50%{
+  transform:scale(1.1);
+ }
+
+ 100%{
+  transform:scale(1);
+ }
+}
+
+/* =========================
+TYPING
+========================= */
+
+.typing{
+ display:flex;
+ gap:5px;
+ padding:10px;
+}
+
+.typing span{
+ width:10px;
+ height:10px;
+ border-radius:50%;
+ background:#38bdf8;
+ animation:blink 1.4s infinite;
+}
+
+.typing span:nth-child(2){
+ animation-delay:0.2s;
+}
+
+.typing span:nth-child(3){
+ animation-delay:0.4s;
+}
+
+@keyframes blink{
+
+ 0%{
+  opacity:0.2;
+ }
+
+ 20%{
+  opacity:1;
+ }
+
+ 100%{
+  opacity:0.2;
+ }
+}
+
+/* =========================
+LOADER
+========================= */
+
+.loader{
+ width:50px;
+ height:50px;
+ border:5px solid rgba(255,255,255,0.1);
+ border-top:5px solid #38bdf8;
+ border-radius:50%;
+ animation:spin 1s linear infinite;
+ margin:auto;
+ margin-top:20px;
+}
+
+@keyframes spin{
+
+ 100%{
+  transform:rotate(360deg);
+ }
+}
+
+/* =========================
+FOOTER
+========================= */
 
 footer{
   text-align:center;
@@ -407,36 +565,38 @@ footer{
   margin-top:40px;
 }
 
-/* RESPONSIVE */
+/* =========================
+RESPONSIVE
+========================= */
 
 @media(max-width:768px){
 
  header{
-   flex-direction:column;
-   gap:15px;
+  flex-direction:column;
+  gap:15px;
  }
 
  nav{
-   flex-wrap:wrap;
-   justify-content:center;
+  flex-wrap:wrap;
+  justify-content:center;
  }
 
  .hero h1{
-   font-size:42px;
+  font-size:42px;
  }
 
  #chatbox{
-   width:95%;
-   left:2.5%;
-   height:80vh;
+  width:95%;
+  left:2.5%;
+  height:80vh;
  }
 
  .container{
-   padding:20px;
+  padding:20px;
  }
 
  .popup-box{
-   width:90%;
+  width:90%;
  }
 }
 
@@ -460,7 +620,9 @@ footer{
 
 <a href="#tools">Tools</a>
 
-<a href="#" onclick="openChat()">AI Chat</a>
+<a href="#" onclick="checkLoginAndOpenChat()">
+AI Chat
+</a>
 
 {% if user.is_authenticated %}
 
@@ -485,15 +647,11 @@ Logout
 {% else %}
 
 <a href="/login/">
-<button>
-Login
-</button>
+<button>Login</button>
 </a>
 
 <a href="/signup/">
-<button>
-Signup
-</button>
+<button>Signup</button>
 </a>
 
 {% endif %}
@@ -507,7 +665,8 @@ Signup
 <section class="hero">
 
 <h1>
-Next Generation <span>AI Platform</span>
+Next Generation
+<span>AI Platform</span>
 </h1>
 
 <p>
@@ -518,6 +677,27 @@ and interact with futuristic AI assistants.
 <button onclick="checkLoginAndOpenChat()">
 Launch AI Assistant
 </button>
+
+</section>
+
+<!-- STATS -->
+
+<section class="stats">
+
+<div class="stat-card">
+<h2>10K+</h2>
+<p>AI Generations</p>
+</div>
+
+<div class="stat-card">
+<h2>5K+</h2>
+<p>Users</p>
+</div>
+
+<div class="stat-card">
+<h2>99%</h2>
+<p>AI Accuracy</p>
+</div>
 
 </section>
 
@@ -532,7 +712,7 @@ Launch AI Assistant
 <h2>💬 AI Chatbot</h2>
 
 <p>
-Ask questions and interact with an intelligent AI assistant.
+Ask questions and interact with intelligent AI.
 </p>
 
 <button onclick="checkLoginAndOpenChat()">
@@ -541,7 +721,7 @@ Open Chat
 
 </div>
 
-<!-- IMAGE GENERATOR -->
+<!-- IMAGE -->
 
 <div class="card">
 
@@ -564,14 +744,14 @@ Generate Image
 
 </div>
 
-<!-- CODE GENERATOR -->
+<!-- CODE -->
 
 <div class="card">
 
 <h2>💻 AI Code Generator</h2>
 
 <p>
-Generate HTML, CSS, JavaScript, Python and more instantly.
+Generate HTML, CSS, JS, Python and more.
 </p>
 
 <input
@@ -637,27 +817,32 @@ onkeypress="handleEnter(event)"
 </h2>
 
 <p>
-Please login or create an account
+Please login or signup
 to use AI features.
 </p>
 
 <div class="popup-buttons">
 
 <a href="/login/">
-<button>
-Login
-</button>
+<button>Login</button>
 </a>
 
 <a href="/signup/">
-<button>
-Signup
-</button>
+<button>Signup</button>
 </a>
 
 </div>
 
 </div>
+
+</div>
+
+<!-- FLOATING BUTTON -->
+
+<div id="floatingAI"
+onclick="checkLoginAndOpenChat()">
+
+🤖
 
 </div>
 
@@ -680,10 +865,11 @@ function requireLogin(){
 
  if(!isAuthenticated){
 
-   document.getElementById('loginPopup')
-   .style.display='flex';
+  document.getElementById(
+  'loginPopup'
+  ).style.display='flex';
 
-   return false;
+  return false;
  }
 
  return true;
@@ -693,30 +879,53 @@ function requireLogin(){
 
 function openChat(){
 
- document.getElementById('chatbox')
- .style.display='flex';
+ document.getElementById(
+ 'chatbox'
+ ).style.display='flex';
 
  let messages =
  document.getElementById('messages');
 
  if(messages.innerHTML.trim()===''){
 
-   messages.innerHTML += `
-   <div class='msg bot'>
-   Hello 👋 I am your AI assistant.
-   Ask me anything.
-   </div>
-   `;
+  messages.innerHTML += `
+
+  <div class='msg bot'>
+
+  Hello 👋 I am your AI assistant.
+
+  <br><br>
+
+  Try asking:
+
+  <br><br>
+
+  • What is AI?
+
+  <br>
+
+  • Generate Python code
+
+  <br>
+
+  • Explain Deep Learning
+
+  <br>
+
+  • Create futuristic city image
+
+  </div>
+  `;
  }
 }
 
-/* CHECK LOGIN + OPEN CHAT */
+/* CHECK LOGIN */
 
 function checkLoginAndOpenChat(){
 
  if(requireLogin()){
 
-   openChat();
+  openChat();
  }
 }
 
@@ -724,17 +933,18 @@ function checkLoginAndOpenChat(){
 
 function closeChat(){
 
- document.getElementById('chatbox')
- .style.display='none';
+ document.getElementById(
+ 'chatbox'
+ ).style.display='none';
 }
 
-/* ENTER KEY */
+/* ENTER */
 
 function handleEnter(event){
 
  if(event.key === "Enter"){
 
-   sendMessage();
+  sendMessage();
  }
 }
 
@@ -745,12 +955,16 @@ async function sendMessage(){
  if(!requireLogin()) return;
 
  let input =
- document.getElementById('userInput').value;
+ document.getElementById(
+ 'userInput'
+ ).value;
 
  if(input.trim()==='') return;
 
  let messages =
- document.getElementById('messages');
+ document.getElementById(
+ 'messages'
+ );
 
  messages.innerHTML += `
  <div class='msg user'>
@@ -760,17 +974,29 @@ async function sendMessage(){
 
  messages.innerHTML += `
  <div class='msg bot' id='loading'>
- Typing... ⏳
+
+ <div class="typing">
+
+ <span></span>
+ <span></span>
+ <span></span>
+
+ </div>
+
  </div>
  `;
 
  let response =
- await fetch(`/chatbot/?message=${input}`);
+ await fetch(
+ `/chatbot/?message=${input}`
+ );
 
  let data =
  await response.json();
 
- document.getElementById('loading').remove();
+ document.getElementById(
+ 'loading'
+ ).remove();
 
  messages.innerHTML += `
  <div class='msg bot'>
@@ -778,65 +1004,71 @@ async function sendMessage(){
  </div>
  `;
 
- document.getElementById('userInput').value='';
+ document.getElementById(
+ 'userInput'
+ ).value='';
 
  messages.scrollTop =
  messages.scrollHeight;
 }
 
-/* GENERATE CODE */
+/* CODE */
 
 async function generateCode(){
 
  let prompt =
- document.getElementById('codePrompt').value;
+ document.getElementById(
+ 'codePrompt'
+ ).value;
 
- document.getElementById('codeResult')
- .textContent =
+ document.getElementById(
+ 'codeResult'
+ ).textContent =
  "Generating code... ⏳";
 
  let response =
- await fetch(`/generate-code/?prompt=${prompt}`);
+ await fetch(
+ `/generate-code/?prompt=${prompt}`
+ );
 
  let data =
  await response.json();
 
- document.getElementById('codeResult')
- .textContent =
+ document.getElementById(
+ 'codeResult'
+ ).textContent =
  data.code;
 }
-
-/* LOGIN CHECK FOR CODE */
 
 function checkLoginAndGenerateCode(){
 
  if(requireLogin()){
 
-   generateCode();
+  generateCode();
  }
 }
 
-/* GENERATE IMAGE */
+/* IMAGE */
 
 async function generateImage(){
 
  let prompt =
- document.getElementById('imgPrompt').value;
+ document.getElementById(
+ 'imgPrompt'
+ ).value;
 
  let resultDiv =
- document.getElementById('imgResult');
+ document.getElementById(
+ 'imgResult'
+ );
 
- resultDiv.innerHTML = `
- <div style="
- padding:20px;
- text-align:center;
- ">
- 🎨 Creating AI image...
- </div>
- `;
+ resultDiv.innerHTML =
+ `<div class="loader"></div>`;
 
  let response =
- await fetch(`/generate-image/?prompt=${prompt}`);
+ await fetch(
+ `/generate-image/?prompt=${prompt}`
+ );
 
  let data =
  await response.json();
@@ -846,26 +1078,50 @@ async function generateImage(){
  `;
 }
 
-/* LOGIN CHECK FOR IMAGE */
-
 function checkLoginAndGenerateImage(){
 
  if(requireLogin()){
 
-   generateImage();
+  generateImage();
  }
 }
+
+/* ENTER KEY */
+
+document.getElementById(
+'imgPrompt'
+).addEventListener('keypress',
+function(e){
+
+ if(e.key === 'Enter'){
+
+  checkLoginAndGenerateImage();
+ }
+});
+
+document.getElementById(
+'codePrompt'
+).addEventListener('keypress',
+function(e){
+
+ if(e.key === 'Enter'){
+
+  checkLoginAndGenerateCode();
+ }
+});
 
 /* CLOSE POPUP */
 
 window.onclick = function(event){
 
  let popup =
- document.getElementById('loginPopup');
+ document.getElementById(
+ 'loginPopup'
+ );
 
  if(event.target == popup){
 
-   popup.style.display='none';
+  popup.style.display='none';
  }
 }
 
