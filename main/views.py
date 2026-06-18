@@ -300,90 +300,87 @@ def generate_image(request):
 # CODE GENERATOR MODEL
 # ==========================================
 
-# ==========================================
-# CODE GENERATOR MODEL
-# ==========================================
-
-from transformers import pipeline
-
-code_generator = pipeline(
-
-    "text-generation",
-
-    model="deepseek-ai/deepseek-coder-1.3b-instruct"
-)
 
 
 # ==========================================
 # CODE GENERATOR FUNCTION
 # ==========================================
 
-@login_required(login_url='/login/')
+from transformers import pipeline
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from .models import GeneratedCode
+import re
+
+# ==========================================
+# LOAD MODEL
+# ==========================================
+
+code_generator = pipeline(
+    "text-generation",
+    model="deepseek-ai/deepseek-coder-1.3b-instruct"
+)
+
+
+# ==========================================
+# CODE GENERATOR
+# ==========================================
+
+@login_required(login_url="/login/")
 def generate_code(request):
 
-    prompt = request.GET.get('prompt', '').strip()
+    prompt = request.GET.get("prompt", "").strip()
 
     if not prompt:
-
         return JsonResponse({
-
-            'code': 'Please enter a coding task.'
+            "code": "Please enter a coding task."
         })
-
-    # ==========================================
-    # SMART TEMPLATE RESPONSES
-    # ==========================================
 
     lower_prompt = prompt.lower()
 
-    # Calculator
+    # ==================================================
+    # SMART PREDEFINED TEMPLATES
+    # ==================================================
+
     if "calculator" in lower_prompt:
 
         code = """
 <!DOCTYPE html>
 <html>
-
 <head>
-
 <title>Calculator</title>
 
 <style>
 
 body{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-  background:#0f172a;
-  font-family:Arial;
+    font-family:Arial;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    background:#0f172a;
 }
 
 .calculator{
-  background:#1e293b;
-  padding:20px;
-  border-radius:20px;
-  width:300px;
+    background:#1e293b;
+    padding:20px;
+    border-radius:15px;
+    width:320px;
 }
 
 input{
-  width:100%;
-  height:60px;
-  margin-bottom:15px;
-  font-size:24px;
-  text-align:right;
-  border:none;
-  border-radius:10px;
-  padding:10px;
+    width:100%;
+    height:55px;
+    font-size:22px;
+    text-align:right;
+    margin-bottom:15px;
 }
 
 button{
-  width:22%;
-  height:60px;
-  margin:1%;
-  border:none;
-  border-radius:10px;
-  font-size:20px;
-  cursor:pointer;
+    width:23%;
+    height:55px;
+    margin:2px;
+    cursor:pointer;
 }
 
 </style>
@@ -394,24 +391,30 @@ button{
 
 <div class="calculator">
 
-<input type="text" id="display" readonly>
+<input id="display" readonly>
 
-<div>
+<br>
 
 <button onclick="add('7')">7</button>
 <button onclick="add('8')">8</button>
 <button onclick="add('9')">9</button>
 <button onclick="add('/')">/</button>
 
+<br>
+
 <button onclick="add('4')">4</button>
 <button onclick="add('5')">5</button>
 <button onclick="add('6')">6</button>
 <button onclick="add('*')">*</button>
 
+<br>
+
 <button onclick="add('1')">1</button>
 <button onclick="add('2')">2</button>
 <button onclick="add('3')">3</button>
 <button onclick="add('-')">-</button>
+
+<br>
 
 <button onclick="add('0')">0</button>
 <button onclick="calculate()">=</button>
@@ -420,27 +423,35 @@ button{
 
 </div>
 
-</div>
-
 <script>
 
 function add(value){
 
-  document.getElementById('display').value += value;
+    document.getElementById("display").value += value;
+
 }
 
 function calculate(){
 
-  let result = eval(
-    document.getElementById('display').value
-  );
+    try{
 
-  document.getElementById('display').value = result;
+        document.getElementById("display").value =
+        eval(document.getElementById("display").value);
+
+    }
+
+    catch{
+
+        alert("Invalid Expression");
+
+    }
+
 }
 
 function clearDisplay(){
 
-  document.getElementById('display').value = '';
+    document.getElementById("display").value="";
+
 }
 
 </script>
@@ -450,42 +461,45 @@ function clearDisplay(){
 """
 
         GeneratedCode.objects.create(
-
             user=request.user,
-
             prompt=prompt,
-
             code=code
         )
 
-        return JsonResponse({
+        return JsonResponse({"code": code})
 
-            'code': code
-        })
-
-    # ==========================================
+    # ==================================================
     # AI PROMPT
-    # ==========================================
+    # ==================================================
 
     full_prompt = f"""
-You are an expert AI coding assistant.
+You are an expert software engineer.
 
-Task:
-{prompt}
+Generate ONLY source code.
 
 Rules:
-- Generate complete working code
-- Add comments
-- Modern UI if frontend
-- Return only code
-- No explanations
 
-Code:
+- Do not explain.
+- Do not use markdown.
+- Do not use ```html
+- Do not use ```python
+- Return complete working code.
+- Use modern coding standards.
+- If HTML is requested, include CSS and JavaScript.
+- Never generate React JSX.
+- Use class instead of className.
+- Do not include comments outside the code.
+
+Task:
+
+{prompt}
+
+Output:
 """
 
-    # ==========================================
-    # GENERATE CODE
-    # ==========================================
+    # ==================================================
+    # AI GENERATION
+    # ==================================================
 
     result = code_generator(
 
@@ -493,48 +507,54 @@ Code:
 
         max_new_tokens=400,
 
-        temperature=0.2,
+        do_sample=False,
 
-        top_p=0.95,
+        eos_token_id=code_generator.tokenizer.eos_token_id,
 
-        repetition_penalty=1.1,
+        pad_token_id=code_generator.tokenizer.eos_token_id
 
-        do_sample=True
     )
 
-    generated = result[0]['generated_text']
+    generated = result[0]["generated_text"]
 
-    # Remove prompt
-    code = generated.replace(
+    code = generated.replace(full_prompt, "").strip()
 
-        full_prompt,
+    # ==================================================
+    # CLEAN OUTPUT
+    # ==================================================
 
-        ""
-    ).strip()
+    code = re.sub(r"```html", "", code, flags=re.IGNORECASE)
+    code = re.sub(r"```python", "", code, flags=re.IGNORECASE)
+    code = re.sub(r"```css", "", code, flags=re.IGNORECASE)
+    code = re.sub(r"```javascript", "", code, flags=re.IGNORECASE)
+    code = code.replace("```", "")
 
-    # Fallback
-    if len(code) < 10:
+    code = code.replace("className=", "class=")
 
-        code = "Could not generate proper code."
+    code = code.replace("<|assistant|>", "")
+    code = code.replace("</s>", "")
 
-    # ==========================================
+    code = code.replace("Here is the code:", "")
+    code = code.replace("Here's the code:", "")
+
+    code = code.strip()
+
+    if len(code) < 20:
+        code = "Unable to generate code. Please try a more specific prompt."
+
+    # ==================================================
     # SAVE DATABASE
-    # ==========================================
+    # ==================================================
 
     GeneratedCode.objects.create(
-
         user=request.user,
-
         prompt=prompt,
-
         code=code
     )
 
     return JsonResponse({
-
-        'code': code
+        "code": code
     })
-
 
 # ==========================================
 # SIGNUP
